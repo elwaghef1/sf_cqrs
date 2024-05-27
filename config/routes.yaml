@@ -1,5 +1,33 @@
 controllers:
     resource:
-        path: ../src/Controller/
-        namespace: App\Controller
+        path: ../src/Infrastructure/Symfony/Controller
+        namespace: App\Infrastructure\Symfony\Controller\
     type: attribute
+
+post_create:
+    path: /post/create
+    controller: App\Infrastructure\Symfony\Controller\PostController::create
+    methods: POST
+
+post_show:
+    path: /post/{id}
+    controller: App\Infrastructure\Symfony\Controller\PostController::show
+    methods: GET
+
+post_delete:
+    path: /post/{id}
+    controller: App\Infrastructure\Symfony\Controller\PostController::delete
+    methods: DELETE
+
+post_update:
+    path: /post/{id}
+    controller: App\Infrastructure\Symfony\Controller\PostController::update
+    methods: PUT
+
+post_all:
+    path: /posts
+    controller: App\Infrastructure\Symfony\Controller\PostController::getAllPosts
+    methods: GET
+
+api_login_check:
+    path: /api/login_check
