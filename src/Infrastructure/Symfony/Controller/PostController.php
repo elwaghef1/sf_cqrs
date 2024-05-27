@@ -146,26 +146,33 @@ class PostController extends AbstractController
      *
      * @param Request $request
      * @param string $id
+     * @param SerializerInterface $serializer
      * @return Response
      */
-    public function update(Request $request, string $id): Response
+    public function update(Request $request, string $id, SerializerInterface $serializer): Response
     {
-        $data = json_decode($request->getContent(), true);
+        $content = $request->getContent();
+        try {
+            $data = $serializer->decode($content, 'json');
 
-        if (!isset($data['title']) || !isset($data['content'])) {
-            return new Response('Invalid data', Response::HTTP_BAD_REQUEST);
+            if (!isset($data['title']) || !isset($data['content'])) {
+                return new Response('Invalid data', Response::HTTP_BAD_REQUEST);
+            }
+
+            $command = new UpdatePostCommand(
+                (int) $id,
+                $data['title'],
+                $data['content']
+            );
+
+            $this->updatePostHandler->handle($command);
+
+            return new Response('Post updated', Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return new Response('Invalid JSON format', Response::HTTP_BAD_REQUEST);
         }
-
-        $command = new UpdatePostCommand(
-            (int) $id,
-            $data['title'],
-            $data['content']
-        );
-
-        $this->updatePostHandler->handle($command);
-
-        return new Response('Post updated', Response::HTTP_OK);
     }
+
 
     /**
      * Supprime un post par son ID.
